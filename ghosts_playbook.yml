@@ -1,0 +1,37 @@
+---
+- name: Install Ghosts Server
+  hosts: ghost_server
+  remote_user: root
+
+  tasks:
+  - name: Install needed packages
+    apt:
+      pkg:
+	  - docker
+	  - docker-compose
+	  - ansible
+	  - ansible-galaxy
+      state: latest
+  -name: Download GHOSTS server binary files
+   get_url:
+     url: https://raw.githubusercontent.com/cmu-sei/GHOSTS/master/src/Ghosts.Api/docker-compose.yml
+	 dest: /tmp/docker-compose.yml
+  -name: Start Docker Services for GHOST server
+  -name: Create and start services
+   community.docker.docker_compose:
+     project_src: /tmp
+   register: output
+
+- name: Update db servers
+  hosts: databases
+  remote_user: root
+
+  tasks:
+  - name: Ensure postgresql is at the latest version
+    ansible.builtin.yum:
+      name: postgresql
+      state: latest
+  - name: Ensure that postgresql is started
+    ansible.builtin.service:
+      name: postgresql
+      state: started
