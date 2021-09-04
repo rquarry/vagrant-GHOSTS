@@ -38,6 +38,8 @@ VAGRANT_BOX = "ubuntu/focal64"
 #      config.proxy.http     = "http://usernam:password@x.y:80"
 #      config.proxy.https    = "http://usernam:password@x.y:80"
 #      config.proxy.no_proxy = "localhost,127.0.0.1"
+
+      # Provision the Ghosts server
       config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       config.ssh.insert_key = false
       config.vm.box = VAGRANT_BOX
@@ -60,6 +62,8 @@ VAGRANT_BOX = "ubuntu/focal64"
       config.vm.provision :shell, path: "bootstrap-node.sh"
       config.vm.provision :ansible do |ansible|
         ansible.verbose = "v"
-        ansible.playbook = "ghosts_playbook.yml"
+        ansible.playbook = "ghostserver_playbook.yml"
       end
+      
+      
 end
