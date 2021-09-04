@@ -1,11 +1,10 @@
 # Ansible Environment: 
 
 Multi-Machine Vagrant Environments:
-This Vagrantfile will create 3 Ubuntu 20.04 VM's to simulate Ansible control machine and 2 target hosts. 
+This Vagrantfile will create 2 Ubuntu 20.04 VM's:
 
-* Host1 - No GUI
-* Host2 - No GUI
-* ansible-host - No GUI, ansible core installed
+* ghostserver.demo.com - Host running Cargenie Mellon's GHOSTS NPC automation platform
+* ansible-host - Host intended to serve as an ansible tower, but isn't currently properly configured. 
 
 
 ## Requirements:
@@ -16,24 +15,6 @@ This Vagrantfile will create 3 Ubuntu 20.04 VM's to simulate Ansible control mac
 * Vagrant plugins - vagrant-proxyconf - needed if you are running behind proxy
 * Ansible: latest
 * Virtualbox: latest
-
-
-# Note: if the build fail because of the hypervisor errors. You need to follow this steps.
-
-First find out the name of the hypervisor:
-```
-$ lsmod | grep kvm
-kvm_intel             204800  6
-kvm                   593920  1 kvm_intel
-irqbypass              16384  1 kvm
-```
-The one we're interested in is kvm_intel. You might have another.
-
-Blacklist the hypervisor (run the following as root):
-```
-$ echo 'blacklist kvm-intel' >> /etc/modprobe.d/blacklist.conf
-```
-Restart your machine and try running vagrant again.
 
 
 ## Other files included:
@@ -57,4 +38,4 @@ Once you are done:
 ## The Vagrantfile performs the following:
 - Defines the VM's with static private IP addresses, vcpu, memory and vagrant-box
 - Calls "bootstrap-node.sh" which puts IP/hostname information into /etc/hosts. This sets the host specific behavior of the playbook. 
-- Calls "playbook.yml" to config each box.
+- Calls "ghosts_playbook.yml" to config each box.
