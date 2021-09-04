@@ -56,7 +56,7 @@ Vagrant.configure("2") do |config|
       config.vm.provision :shell, path: "bootstrap-node.sh"
       config.vm.provision :ansible do |ansible|
         ansible.verbose = "v"
-        ansible.playbook = "playbook.yml"
+        ansible.playbook = "ghosts_playbook.yml"
       end
    end
   end
