@@ -41,7 +41,6 @@ Vagrant.configure("2") do |config|
       config.vm.provider :virtualbox do |v|
         v.memory = opts[:ram]
         v.cpus = opts[:vcpu]
-        # Initial boot of VM's hangs. Showing gui helps close to re-run vagrant file
         v.gui = true
       end
       config.vm.network :private_network, ip: opts[:ip]
