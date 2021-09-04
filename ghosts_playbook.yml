@@ -10,33 +10,19 @@
     apt:
       update_cache: yes
 
-  - name: Install ansible and galaxy
-    apt:
-      pkg:
-      - ansible
-      state: latest
-    when: "'ansible-host' in inventory_hostname"
-
-  - name: Install docker compose galaxy role
-    command: ansible-galaxy collection install community.docker
-    when: "'ansible-host' in inventory_hostname"
-
   - name: Install docker
     apt:
       pkg:
       - docker.io
       - docker-compose
       state: latest
-    when: "'ghostserver' in inventory_hostname"
 
   - name: Download GHOSTS server binary files
     get_url:
       url: https://raw.githubusercontent.com/cmu-sei/GHOSTS/master/src/Ghosts.Api/docker-compose.yml
       dest: /tmp/docker-compose.yml
-    when: "'ghostserver' in inventory_hostname"
 
   - name: Create and start docker services for GHOST server
     docker_compose:
       project_src: /tmp
     register: output
-    when: "'ghostserver' in inventory_hostname"

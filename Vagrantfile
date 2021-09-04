@@ -2,8 +2,12 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+
+# Global box name used in this vagrant file
+VAGRANT_BOX = "ubuntu/focal64"
+
 # Define VMs with static private IP addresses, vcpu, memory and vagrant-box.
-  boxes = [
+#  boxes = [
 #    {
 #      :name => "web1.demo.com",
 #      :box => "ubuntu/focal64",
@@ -11,39 +15,40 @@ Vagrant.configure("2") do |config|
 #      :vcpu => 1,
 #      :ip => "192.168.29.2"
 #    },
-    {
-      :name => "ghostserver.demo.com",
-      :box => "ubuntu/focal64",
-      :ram => 1024,
-      :vcpu => 1,
-      :ip => "192.168.29.3"
-    },
-    {
-      :name => "ansible-host",
-      :box => "ubuntu/focal64",
-      :ram => 8048,
-      :vcpu => 1,
-      :ip => "192.168.29.4"
-    }
-  ]
-
-  # Provision each of the VMs.
-  boxes.each do |opts|
-    config.vm.define opts[:name] do |config|
+#    {
+#      :name => "ghostserver.demo.com",
+#      :box => "ubuntu/focal64",
+#      :ram => 1024,
+#      :vcpu => 1,
+#      :ip => "192.168.29.3"
+#    },
+#    {
+#      :name => "ansible-host",
+#      :box => "ubuntu/focal64",
+#      :ram => 8048,
+#      :vcpu => 1,
+#      :ip => "192.168.29.4"
+#    }
+#  ]
+#
+#  # Provision each of the VMs.
+#  boxes.each do |opts|
+#    config.vm.define opts[:name] do |config|
 #   Only Enable this if you are connecting to Proxy server
 #      config.proxy.http     = "http://usernam:password@x.y:80"
 #      config.proxy.https    = "http://usernam:password@x.y:80"
 #      config.proxy.no_proxy = "localhost,127.0.0.1"
       config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       config.ssh.insert_key = false
-      config.vm.box = opts[:box]
-      config.vm.hostname = opts[:name]
+      config.vm.box = VAGRANT_BOX
+      config.vm.hostname = "ghostserver.demo.com"
       config.vm.provider :virtualbox do |v|
-        v.memory = opts[:ram]
-        v.cpus = opts[:vcpu]
+        v.memory = 1024
+        v.cpus = 1
         v.gui = true
+        v.name = "ghostserver.demo.com"
       end
-      config.vm.network :private_network, ip: opts[:ip]
+      config.vm.network :private_network, ip: "192.168.29.3"
       config.vm.provision :file do |file|
          file.source     = './keys/vagrant'
          file.destination    = '/tmp/vagrant'
@@ -57,6 +62,4 @@ Vagrant.configure("2") do |config|
         ansible.verbose = "v"
         ansible.playbook = "ghosts_playbook.yml"
       end
-   end
-  end
 end
