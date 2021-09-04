@@ -4,15 +4,15 @@
 Vagrant.configure("2") do |config|
 # Define VMs with static private IP addresses, vcpu, memory and vagrant-box.
   boxes = [
+#    {
+#      :name => "web1.demo.com",
+#      :box => "ubuntu/focal64",
+#      :ram => 1024,
+#      :vcpu => 1,
+#      :ip => "192.168.29.2"
+#    },
     {
-      :name => "web1.demo.com",
-      :box => "ubuntu/focal64",
-      :ram => 1024,
-      :vcpu => 1,
-      :ip => "192.168.29.2"
-    },
-    {
-      :name => "web2.demo.com",
+      :name => "ghostserver.demo.com",
       :box => "ubuntu/focal64",
       :ram => 1024,
       :vcpu => 1,
