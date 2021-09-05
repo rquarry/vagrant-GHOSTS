@@ -31,26 +31,17 @@ VAGRANT_BOX = "ubuntu/focal64"
 #    }
 #  ]
 #
-#  # Provision each of the VMs.
-#  boxes.each do |opts|
-#    config.vm.define opts[:name] do |config|
-#   Only Enable this if you are connecting to Proxy server
-#      config.proxy.http     = "http://usernam:password@x.y:80"
-#      config.proxy.https    = "http://usernam:password@x.y:80"
-#      config.proxy.no_proxy = "localhost,127.0.0.1"
 
-      # Provision the Ghosts server
+      # Global settings for all VM's 
       config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       config.ssh.insert_key = false
       config.vm.box = VAGRANT_BOX
-      config.vm.hostname = "ghostserver.demo.com"
       config.vm.provider :virtualbox do |v|
         v.memory = 1024
         v.cpus = 1
         v.gui = true
-        v.name = "ghostserver.demo.com"
       end
-      config.vm.network :private_network, ip: "192.168.29.3"
+      # Run global provisioners
       config.vm.provision :file do |file|
          file.source     = './keys/vagrant'
          file.destination    = '/tmp/vagrant'
@@ -60,10 +51,26 @@ VAGRANT_BOX = "ubuntu/focal64"
         file.destination    = '/home/vagrant/inventory-test.yaml'
        end
       config.vm.provision :shell, path: "bootstrap-node.sh"
-      config.vm.provision :ansible do |ansible|
+
+      # Set VM specific details
+      
+      # Ghosts client
+      config.vm.define "gclient" do |gclient|
+      	gclient.vm.hostname = "ghostclient1.demo.com"
+      	gclient.vm.network :private_network, ip: "192.168.29.10"
+      	gclient.vm.provision :ansible do |ansible|
+        ansible.verbose = "v"
+        ansible.playbook = "ghostclient_playbook.yml"
+      end
+     end
+      
+      # Ghosts server
+      config.vm.define "gserver" do |gserver|
+      	gserver.vm.hostname = "ghostserver.demo.com"
+      	gserver.vm.network :private_network, ip: "192.168.29.3"
+      	gserver.vm.provision :ansible do |ansible|
         ansible.verbose = "v"
         ansible.playbook = "ghostserver_playbook.yml"
       end
-      
-      
+     end
 end

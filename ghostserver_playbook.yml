@@ -17,7 +17,7 @@
       - docker-compose
       state: latest
 
-  - name: Download GHOSTS server binary files
+  - name: Download GHOSTS server docker compose file
     get_url:
       url: https://raw.githubusercontent.com/cmu-sei/GHOSTS/master/src/Ghosts.Api/docker-compose.yml
       dest: /tmp/docker-compose.yml

@@ -1,0 +1,22 @@
+---
+- name: Install Ghosts Client
+  hosts: all
+  become: yes
+  become_user: root
+
+  tasks:
+
+  - name: run apt-get update
+    apt:
+      update_cache: yes
+
+  - name: Download the Microsoft package signing key and package repo package.
+    get_url:
+      url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      dest: /tmp/packages-microsoft-prod.deb
+
+  - name: Microsoft package signing key and package repo package
+    shell: dpkg -i /tmp/packages-microsoft-prod.deb
+
+  - name: Install ASP.NET Core Runtime
+    shell: sudo apt-get install -y apt-transport-https && sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-5.0
