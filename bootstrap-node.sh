@@ -3,4 +3,4 @@
 cat >> /etc/hosts <<-EOL
 # vagrant environment nodes
 192.168.29.3  ghostserver.demo.com
-192.168.29.4  ansible-host
+192.168.29.10 ghostclient1.demo.com
