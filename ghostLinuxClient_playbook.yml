@@ -1,0 +1,48 @@
+---
+- name: Install Ghosts Client
+  hosts: all
+  become: yes
+  become_user: root
+
+  tasks:
+
+  - name: Download the Microsoft package signing key and package repo package.
+    get_url:
+      url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      dest: /tmp/packages-microsoft-prod.deb
+
+  - name: Microsoft package signing key and package repo package
+    shell: dpkg -i /tmp/packages-microsoft-prod.deb
+
+  - name: run apt-get update
+    apt:
+      upgrade: no
+      update_cache: yes
+
+  - name: Install ASP.NET Core Runtime
+    shell: apt-get install -y apt-transport-https && apt-get install -y aspnetcore-runtime-6.0
+
+  - name: enable auto login
+    ini_file:
+       path: /etc/gdm3/custom.conf
+       section: daemon
+       option: AutomaticLoginEnable
+       value: true
+
+  - name: enable auto login user (vagrant)
+    ini_file:
+        path: /etc/gdm3/custom.conf
+        section: daemon
+        option: AutomaticLogin
+        value: vagrant
+
+  - name: reboot machine
+    reboot:
+
+  - name: Copy Ghosts 6.2.0 Linux Client
+    copy:
+       src: /home/ryan/Downloads/ghosts-client-linux-v6.2.0.zip
+       dest: /home/vagrant/ghosts-client-linux-v2.6.0.zip
+       owner: vagrant
+       group: vagrant
+       mode: '0644'

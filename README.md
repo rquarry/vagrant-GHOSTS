@@ -1,42 +1,29 @@
 # Ansible Environment:
 
 Multi-Machine Vagrant Environments:
-This Vagrantfile will create 2 Ubuntu 20.04 VM's:
+This Vagrantfile will creates VMs to demonstrate (Cargenie Mellon's GHOSTS NPC automation platform)[https://github.com/cmu-sei/GHOSTS]
 
-* ghostserver.demo.com - Host running Cargenie Mellon's GHOSTS NPC automation platform
+* ghostserver.demo.com - Ubuntu Host running GHOSTS server using the docker-compose.yml file from the project
 * ghostclient1.demo.com - Host with ASP.NET Core Runtime installed. Pending playbook additions for Cargenie Mellon's GHOSTS NPC Linux client.
 
 
-## Requirements:
-
-* Internet connection is a must!
-* Make sure the VT support is enabled on your BIOS
-* Vagrant - 1.9.x or higher
-* Vagrant plugins - vagrant-proxyconf - needed if you are running behind proxy
-* Ansible: latest
-* Virtualbox: latest
+## Host Requirements:
+* An Internet connection
+* Vagrant
+* Ansible 
+* Virtualbox
 
 
 ## Other files included:
-- inventory (unused)
+- inventory-test.yml (unused): Ansible inventory file from original forked repo. Kept for reference
 - bootstrap-node.sh - sets hostname in /etc/hosts for each client
 - ghostserver_playbook.yaml - Uses docker compose to setup GHOSTS server
-- ghostclient_playbook.yaml - (Installs ASP.NET Core Runtime)[https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-]
-- inventory-test.yaml - Not sure what this if for?
+- ghostLinuxClient_playbook.yaml - Installs ASP.NET Core Runtime)[https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-], enables auto-login.
 
-## Connecting the dots:
-Before you run vagrant up, make sure that you updated the Vagrantfile to your desired configuration.
+## Issues
+- The CMU binaries are provided from a box.com account that cannot be directly linked for the download. (Binaries must be downloaded)[https://github.com/cmu-sei/GHOSTS/wiki/Installation-from-distribution-binaries] into the repo root folder to be pushed up to the clients at build time.
+- The linux client (possibly the box being used) has issues with the host-only "private_network" which it assigns as eth1. Vagrant always makes eth0 a NAT adapter. The config in the Vagrant file activates eth1 and leaves eth0 disabled which causes vagrant not to be able to communicate via ssh and timeout during the build. Setup can be completed by activating eth0 using NetworkManager on the desktop.
 
-Once you are done:
-- _vagrant up_
-  Wait for about 6 minutes to finish the build. Once done. You can try to ssh to your ansible-host vm. You can verify this by using "_vagrant status_"
-
-- _vagrant ssh ansible-host_
-  once you are login to your ansible-host vm, you can now verify if the other vm are reachable. The command to use is: "_ansible-playbook -i inventory playbook/ping.yml_"
-
-## Ansible Testing
-
-## The Vagrantfile performs the following:
-- Defines the VM's with static private IP addresses, vcpu, memory and vagrant-box
-- Calls "bootstrap-node.sh" which puts IP/hostname information into /etc/hosts. This sets the host specific behavior of the playbook.
-- Calls playbooks depending on the "config.vm.define" directives in lines  58 - 73 of the Vagrant file. 
+## To-Do
+- Look more at automating the install of Grafana
+- Update windows client to extract ghosts, setup the config, and edit the registry to auto start.
